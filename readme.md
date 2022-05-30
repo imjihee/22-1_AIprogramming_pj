@@ -20,6 +20,7 @@ TypeError: 'numpy.float64' object cannot be interpreted as an integer
 
 
 |Data|Reg80|svm|CNN|KNN|
+|----|----|----|----|----|
 |1|0.76|0.8|0.67|0.7|
 |2|-|0.63|0.72|0.75|
 |3|0.912|0.98|0.97|0.97|
