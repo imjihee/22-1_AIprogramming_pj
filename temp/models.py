@@ -2,7 +2,6 @@ import os
 import torch
 import numpy as np
 import pandas as pd
-import plotly.express as px
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
@@ -38,12 +37,10 @@ def svm(datax,datay,xtest, ytest, n):
     print("----------------------------------------------")
     print("***do svm for dataset", n)
     cut=round(len(datax)*0.8)
-    X_t = datax[:cut]
-    yt = datay[:cut]
+    X_train = datax[:cut]
+    ytrain = datay[:cut]
     X_val = datax[cut:]
     yval = datay[cut:]
-    X_train=np.concatenate((X_t,X_t,X_t))
-    ytrain=np.concatenate((yt,yt,yt))
 
     loss_function = nn.CrossEntropyLoss()
     
@@ -51,21 +48,18 @@ def svm(datax,datay,xtest, ytest, n):
     results = {}
     # Set fixed random number seed
     torch.manual_seed(42)
-    """PCA"""
-    #"""
-    #sc = StandardScaler()
-    #X_train = sc.fit_transform(X_train)
-    #xtest = sc.transform(xtest)
-    #X_val = sc.transform(X_val)
+
+    #input_data=datax
+    #target_data=datay
 
     svm=SVC()
-    params = {'kernel':['rbf'], 'degree':4} #poly - degree 2 or 3 // rbf - gamma 0.1 or 0.2
+    params = {'kernel':['rbf'], 'C':[10]} #poly - degree 2 or 3 // rbf - gamma 0.1 or 0.2
     print("Train start")
-    #classifier=GridSearchCV(svm,params,n_jobs=2)
-    svm.fit(X_train, ytrain)
+    classifier=GridSearchCV(svm,params,n_jobs=2)
+    classifier.fit(X_train, ytrain)
 
-    pred_val = svm.predict(X_val)
-    pred = svm.predict(xtest) 
+    pred_val = classifier.predict(X_val)
+    pred = classifier.predict(xtest) 
     # Process is complete.
     print('RESULT')
     acc_v=accuracy_score(pred_val, yval)
